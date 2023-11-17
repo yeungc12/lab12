@@ -43,15 +43,20 @@ public class FamilyTree
         TreeNode getNodeWithName(String targetName)
         {
             // Does this node have the target name?
-            if (parent.name == targetName)
+            if (this.name.equals(targetName))
+            	
                 return this;
                     
             // No, recurse. Check all children of this node.
             for (TreeNode child: children)
             {
-            	if(child.name == targetName) {
-            		return child;
-            	}
+            	
+            		TreeNode t;
+            		t = child;
+            		if(t!=null) {
+            			return t;
+            		}
+        
                 // If child.getNodeWithName(targetName) returns a non-null node,
                 // then that's the node we're looking for. Return it.
             }
@@ -66,7 +71,7 @@ public class FamilyTree
         ArrayList<TreeNode> collectAncestorsToList()
         {
             ArrayList<TreeNode> ancestors = new ArrayList<>();
-            TreeNode x = this.parent;
+            TreeNode x = parent;
             while(x != null) {
             	ancestors.add(x);
             	x = x.parent; 
@@ -118,7 +123,7 @@ public class FamilyTree
 
 		// Parse the input file. Create a FileReader that reads treeFile. Create a BufferedReader
 		// that reads from the FileReader.
-		FileReader fr = new FileReader("treeFile.txt");
+		FileReader fr = new FileReader(treeFile);
 		BufferedReader br = new BufferedReader(fr);
 		String line;
 		while ((line = br.readLine()) != null)
@@ -135,12 +140,13 @@ public class FamilyTree
 	private void addLine(String line) throws TreeException
 	{
 		// Extract parent and array of children.
-		int colonIndex =  should be the index of the colon in line.
+		
+		int colonIndex = line.indexOf(':');
 		if (colonIndex < 0)
 			throw new TreeException("colon index should be > 0");
-		String parent = line.subtring(0,colonIndex); 
-		String childrenString = line.subtring(colonIndex); 
-		String[] childrenArray = childrenString.split();
+		String parent = line.substring(0,colonIndex); 
+		String childrenString = line.substring(colonIndex); 
+		String[] childrenArray = childrenString.split(",");
 		// Find parent node. If root is null then the tree is empty and the
 		// parent node must be constructed. Otherwise the parent node should be 
 		// somewhere in the tree.
@@ -149,12 +155,18 @@ public class FamilyTree
 			parentNode = root = new TreeNode(parent);
 		else
 		{
-			parentNode = root.getNodeWithName(); 
-			throw new Exception("NODE NOT FOUND");
+			parentNode = root.getNodeWithName(parent); 
+			if(parentNode == null) {
+					throw new TreeException("NODE NOT FOUND");
+			}
 		}
-		for(TreeNode y: childrenArray)
+		String caName = "";
+			for(int i = 0; i < childrenArray.length;i++) {
+				caName = childrenArray[i];
+				parentNode.addChild(new TreeNode(caName));
+			}
 		// Add child nodes to parentNode.
-		?? For each name in childrenArray, create a new node and add that node to parentNode.
+		//?? For each name in childrenArray, create a new node and add that node to parentNode.
 	}
 	
 	
